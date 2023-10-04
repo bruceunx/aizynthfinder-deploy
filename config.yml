@@ -1,0 +1,14 @@
+policy:
+  files:
+    uspto:
+      - ./uspto_model.onnx
+      - ./uspto_templates.csv.gz
+    ringbreaker:
+      - ./uspto_ringbreaker_model.onnx
+      - ./uspto_ringbreaker_templates.csv.gz
+filter:
+  files:
+    uspto: ./uspto_filter_model.onnx
+stock:
+  files:
+    zinc: ./zinc_stock.hdf5

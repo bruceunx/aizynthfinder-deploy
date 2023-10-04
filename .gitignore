@@ -1,0 +1,4 @@
+*.onnx
+*.gz
+*.hdf5
+/**/__pycache__/
