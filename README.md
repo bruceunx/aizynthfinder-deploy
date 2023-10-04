@@ -10,6 +10,8 @@
 
 ## How to use this package
 
+- python >= 3.10
+
 - download trained model from original code base
 
   - uspto_filter_model.onnx // model for filter policy
@@ -21,6 +23,7 @@
 - numpy, pandas, matplotlib, rdkit, networkx
 
 - run usage.py to check results.
+
 
 #### TODO
 
