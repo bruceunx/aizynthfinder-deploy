@@ -20,10 +20,10 @@
   - zinc_stock.hdf5 // stock data
 
 - install packages
-- numpy, pandas, matplotlib, rdkit, networkx
+
+  - numpy, pandas, matplotlib, rdkit, networkx
 
 - run usage.py to check results.
-
 
 #### TODO
 
