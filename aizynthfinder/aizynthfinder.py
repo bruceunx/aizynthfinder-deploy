@@ -82,7 +82,7 @@ class AiZynthFinder:
         self.search_stats = {"returned_first": False, "iterations": 0}
 
         time0 = time.time()
-        time_past = 0
+        time_past = .0
         i = 1
         while time_past < self.config.time_limit and i <= self.config.iteration_limit:
             self.search_stats["iterations"] += 1
