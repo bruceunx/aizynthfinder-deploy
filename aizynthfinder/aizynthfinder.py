@@ -49,7 +49,8 @@ class AiZynthFinder:
             nmax=self.config.post_processing.max_routes,
             return_all=self.config.post_processing.all_routes,
         )
-        self.routes = RouteCollection.from_analysis(self.analysis, config_selection)
+        self.routes = RouteCollection.from_analysis(self.analysis,
+                                                    config_selection)
 
     def extract_statistics(self) -> Dict:
         if not self.analysis:
@@ -75,7 +76,8 @@ class AiZynthFinder:
         except Exception:
             raise ValueError("Target molecule unsanitizable")
 
-        self.tree = MctsSearchTree(root_smiles=self.target_smiles, config=self.config)
+        self.tree = MctsSearchTree(root_smiles=self.target_smiles,
+                                   config=self.config)
 
     def tree_search(self) -> None:
         self.prepare_tree()
