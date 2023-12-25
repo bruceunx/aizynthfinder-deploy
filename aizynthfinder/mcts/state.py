@@ -12,9 +12,13 @@ class MctsState:
     def __init__(self, mols: Sequence[TreeMolecule], config: Any) -> None:
         self.mols = mols
         self.stock = config.stock
-        self.in_stock_list = [mol in self.stock for mol in self.mols]
+        if config.ignore_stock:
+            self.in_stock_list = [False for mol in self.mols]
+        else:
+            self.in_stock_list = [mol in self.stock for mol in self.mols]
         self.expandable_mols = [
-            mol for mol, in_stock in zip(self.mols, self.in_stock_list) if not in_stock
+            mol for mol, in_stock in zip(self.mols, self.in_stock_list)
+            if not in_stock
         ]
         self._stock_availability: Optional[List[str]] = None
         self.is_solved = all(self.in_stock_list)
@@ -39,7 +43,9 @@ class MctsState:
         string = "%s\n%s\n%s\n%s\nScore: %0.3F Solved: %s" % (
             str([mol.smiles for mol in self.mols]),
             str([mol.transform for mol in self.mols]),
-            str([mol.parent.smiles if mol.parent else "-" for mol in self.mols]),
+            str([
+                mol.parent.smiles if mol.parent else "-" for mol in self.mols
+            ]),
             str(self.in_stock_list),
             self.score,
             self.is_solved,

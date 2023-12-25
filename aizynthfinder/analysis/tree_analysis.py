@@ -28,7 +28,8 @@ class TreeAnalysis:
         sorted_items, sorted_scores, _ = self.scorer.sort(nodes)
         actions = [node.actions_to() for node in sorted_items]
 
-        return self._collect_top_items(sorted_items, sorted_scores, actions, selection)
+        return self._collect_top_items(sorted_items, sorted_scores, actions,
+                                       selection)  # type: ignore
 
     def tree_statistics(self) -> Dict:
         return self._tree_statistics_mcts()
@@ -47,14 +48,17 @@ class TreeAnalysis:
         top_state = top_node.state
         nodes = list(self.search_tree.graph())
         mols_in_stock = ", ".join(
-            mol.smiles for mol, instock in zip(top_state.mols, top_state.in_stock_list)
+            mol.smiles
+            for mol, instock in zip(top_state.mols, top_state.in_stock_list)
             if instock)
         mols_not_in_stock = ", ".join(
-            mol.smiles for mol, instock in zip(top_state.mols, top_state.in_stock_list)
+            mol.smiles
+            for mol, instock in zip(top_state.mols, top_state.in_stock_list)
             if not instock)
 
-        policy_used_counts = self._policy_used_statistics(
-            [node[child]["action"] for node in nodes for child in node.children])
+        policy_used_counts = self._policy_used_statistics([
+            node[child]["action"] for node in nodes for child in node.children
+        ])
 
         return {
             "number_of_nodes":
@@ -66,7 +70,8 @@ class TreeAnalysis:
             "number_of_routes":
             sum(1 for node in nodes if not node.children),
             "number_of_solved_routes":
-            sum(1 for node in nodes if not node.children and node.state.is_solved),
+            sum(1 for node in nodes
+                if not node.children and node.state.is_solved),
             "top_score":
             self.scorer(top_node),
             "is_solved":
@@ -96,7 +101,8 @@ class TreeAnalysis:
         reactions: Sequence[Union[Iterable[RetroReaction],
                                   Iterable[FixedRetroReaction]]],
         selection,
-    ) -> Tuple[Union[Sequence[MctsNode], Sequence[ReactionTree]], Sequence[float]]:
+    ) -> Tuple[Union[Sequence[MctsNode], Sequence[ReactionTree]],
+               Sequence[float]]:
         if len(items) <= selection.nmin:
             return items, scores
 
@@ -130,7 +136,8 @@ class TreeAnalysis:
 
     @staticmethod
     def _policy_used_statistics(
-            reactions: Iterable[Union[RetroReaction, FixedRetroReaction]]) -> Dict:
+            reactions: Iterable[Union[RetroReaction,
+                                      FixedRetroReaction]]) -> Dict:
         policy_used_counts: Dict = defaultdict(int)
         for reaction in reactions:
             policy_used = reaction.metadata.get("policy_name")

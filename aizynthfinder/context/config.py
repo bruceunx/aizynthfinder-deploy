@@ -10,32 +10,33 @@ from .stock.stock import Stock
 
 @dataclass
 class _PostprocessingConfiguration:
-    min_routes: int = 1
-    max_routes: int = 8
-    all_routes: bool = False
+    min_routes = 1
+    max_routes = 8
+    all_routes = False
     route_distance_model: Optional[str] = None
 
 
 @dataclass
 class Configuration:
 
-    C: float = 1.4
-    cutoff_cumulative: float = 0.995
-    cutoff_number: int = 50
-    additive_expansion: bool = False
-    use_rdchiral: bool = True
-    max_transforms: int = 6
-    default_prior: float = 0.5
-    use_prior: bool = True
-    iteration_limit: int = 100
-    return_first: bool = False
-    time_limit: int = 20
-    filter_cutoff: float = 0.05
-    exclude_target_from_stock: bool = True
-    template_column: str = "retro_template"
-    prune_cycles_in_search: bool = True
-    search_algorithm: str = "mcts"
+    C = 1.4
+    cutoff_cumulative = 0.995
+    cutoff_number = 50
+    additive_expansion = False
+    use_rdchiral = True
+    max_transforms = 6
+    default_prior = 0.5
+    use_prior = True
+    iteration_limit = 100
+    return_first = False
+    time_limit = 20
+    filter_cutoff = 0.05
+    exclude_target_from_stock = True
+    template_column = "retro_template"
+    prune_cycles_in_search = True
+    search_algorithm = "mcts"
     post_processing = _PostprocessingConfiguration()
+    ignore_stock = False
 
     def __post_init__(self) -> None:
         self._properties: Dict = {}
@@ -54,7 +55,8 @@ class Configuration:
         config_obj = Configuration()
         config_obj._update_from_config(source)
 
-        config_obj.expansion_policy.load_from_config(**source.get("policy", {}))
+        config_obj.expansion_policy.load_from_config(
+            **source.get("policy", {}))
         config_obj.filter_policy.load_from_config(**source.get("filter", {}))
         config_obj.stock.load_from_config(**source.get("stock", {}))
 

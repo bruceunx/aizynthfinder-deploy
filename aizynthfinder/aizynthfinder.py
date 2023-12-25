@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 import time
 
 from .analysis.routes import RouteCollection
@@ -22,6 +22,8 @@ class AiZynthFinder:
         self.scorers = self.config.scorers
 
         self._target_mol: Optional[Molecule] = None
+        self.analysis: TreeAnalysis | None = None
+        self.tree: MctsSearchTree | None = None
 
     @property
     def target_smiles(self) -> str:
@@ -43,6 +45,8 @@ class AiZynthFinder:
         self._target_mol = mol
 
     def build_routes(self, scorer: str = "state score") -> None:
+        if self.tree is None:
+            return None
         self.analysis = TreeAnalysis(self.tree, scorer=self.scorers[scorer])
         config_selection = RouteSelectionArguments(
             nmin=self.config.post_processing.min_routes,
@@ -53,7 +57,7 @@ class AiZynthFinder:
                                                     config_selection)
 
     def extract_statistics(self) -> Dict:
-        if not self.analysis:
+        if self.analysis is None:
             return {}
         stats = {
             "target":
@@ -81,7 +85,11 @@ class AiZynthFinder:
 
     def tree_search(self) -> None:
         self.prepare_tree()
-        self.search_stats = {"returned_first": False, "iterations": 0}
+        assert self.tree is not None
+        self.search_stats: Dict[str, Any] = {
+            "returned_first": False,
+            "iterations": 0
+        }
 
         time0 = time.time()
         time_past = .0
@@ -89,11 +97,9 @@ class AiZynthFinder:
         while time_past < self.config.time_limit and i <= self.config.iteration_limit:
             self.search_stats["iterations"] += 1
             is_solved = self.tree.one_iteration()
-
             if is_solved and "first_solution_time" not in self.search_stats:
                 self.search_stats["first_solution_time"] = time.time() - time0
                 self.search_stats["first_solution_iteration"] = i
-
             if self.config.return_first and is_solved:
                 self.search_stats["returned_first"] = True
                 break
